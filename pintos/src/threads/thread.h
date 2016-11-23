@@ -101,6 +101,10 @@ struct thread
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
     int64_t ticks_blocked;  			/* Record the time the thread has been blocked. */
+    
+    int base_priority;
+    struct list locks;
+    struct lock *lock_waiting;
   };
 
 /* If false (default), use round-robin scheduler.
@@ -143,5 +147,11 @@ int thread_get_load_avg (void);
 void blocked_thread_check (struct thread *t,void  *aux UNUSED);
 /*Compare the priority of the thread */
 bool thread_cmp_priority (const struct list_elem *a, const struct list_elem *b,void *aux UNUSED);
+
+void thread_update_priority(struct thread *t);
+void thread_remove_lock(struct lock *lock);
+void thread_hold_the_lock(struct lock *lock);
+void thread_donate_priority(struct thread* t);
+bool lock_cmp_priority(const struct list_elem *a, const struct list_elem *b, void  *aux);
 
 #endif /* threads/thread.h */
